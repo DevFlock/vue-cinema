@@ -1,18 +1,38 @@
+"""File for Cinema class and cinema related functions."""
+
 from typing import List
 
 import requests
 
 
 class Cinema:
-    def __init__(self, **kwargs) -> None:
-        self.name = kwargs.get("name")
-        self.search_term = kwargs.get("search_term")
-        self.id = int(kwargs.get("id", 0))
+    """Main class for cinemas that includes information about them."""
+
+    def __init__(self, cinema_id: int = None, **kwargs) -> None:
+        """
+        Initialize a Cinema object.
+
+        If cinema_id is provided, then the Cinema is found using the API.
+        """
+        if cinema_id is None:
+            self.name = kwargs.get("name")
+            self.search_term = kwargs.get("search_term")
+            self.id = int(kwargs.get("id", 0))
+        else:
+            return get_cinema(cinema_id)
+
+    @classmethod
+    def from_id(cls, cinema_id: int) -> "Cinema":
+        """Return a Cinema object from a cinema_id."""
+        return cls(cinema_id)
 
     def __str__(self) -> str:
+        """Return a string representation of the Cinema object."""
         return self.name
 
+
 def get_cinemas() -> List[Cinema]:
+    """Return a list of Cinema objects."""
     url = "https://www.myvue.com/data/locations"
     headers = {"x-requested-with": "XMLHttpRequest"}
 
@@ -25,6 +45,18 @@ def get_cinemas() -> List[Cinema]:
 
     return cinemas
 
-def search_cinemas(search_term: str) -> List[Cinema]:
+
+def get_cinema(cinema_id: int) -> Cinema | None:
+    """Return a Cinema object with the provided ID."""
     cinemas = get_cinemas()
-    return [cinema for cinema in cinemas if search_term.lower() in cinema.search_term.lower()]
+    try:
+        return [cinema for cinema in cinemas if cinema.id == cinema_id][0]
+    except IndexError:
+        return None
+
+
+def search_cinemas(search_term: str) -> List[Cinema]:
+    """Return a list of Cinema objects that match the search term."""
+    cinemas = get_cinemas()
+    return [cinema for cinema in cinemas
+            if search_term.lower() in cinema.search_term.lower()]

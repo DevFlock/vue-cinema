@@ -1,3 +1,4 @@
+"""Main file for Movie class and movie related functions."""
 from datetime import datetime
 from enum import Enum
 from typing import List
@@ -8,6 +9,8 @@ from .shared import VueURL
 
 
 class BBFC_Certificate(Enum):
+    """Enum containing the different BBFC certificates."""
+
     _U = "U",
     _PG = "PG",
     _12 = "12",
@@ -17,27 +20,42 @@ class BBFC_Certificate(Enum):
 
 
 class Movie:
-    def __init__(self, **kwargs) -> None:
-        self.title = kwargs.get("title")
-        self.id = int(kwargs.get("id", 0))
-        self.image_hero = VueURL(kwargs.get("image_hero"))
-        self.image_poster = VueURL(kwargs.get("image_poster"))
-        self.cert = self._get_cert_type(kwargs.get("cert_image"))
-        self.cert_description = kwargs.get("cert_desc")
-        self.synopsis_short = kwargs.get("synopsis_short")
-        self.synopsis_full = self._remove_html(kwargs.get("synopsis_full", ""))
-        self.release_date = kwargs.get("info_release")
-        self.release_date = datetime.strptime(self.release_date, "%d %b %Y")
-        self.directors: List[str] | None = self._split_names(kwargs.get("info_director", ""))
-        self.cast: List[str] | None = self._split_names(kwargs.get("info_cast", ""))
-        self.runtime = kwargs.get("info_runningtime")
-        self.trailers_link = VueURL(kwargs.get("videolink"))
-        self.film_link = VueURL(kwargs.get("filmlink"))
-        self.times_link = VueURL(kwargs.get("timeslink"))
-        self.trailer_link = VueURL(kwargs.get("video"))
-        self.coming_soon: bool = kwargs.get("coming_soon")
-        self.genres = self._split_genres(kwargs.get("genres"))
-        self.showing_type = kwargs.get("showing_type", {}).get("name")
+    """Main class for movies that includes information about them."""
+
+    def __init__(self, movie_id: int = None, **kwargs) -> None:
+        """Initialize a Movie object."""
+        if movie_id is None:
+            self.title = kwargs.get("title")
+            self.id = int(kwargs.get("id", 0))
+            self.image_hero = VueURL(kwargs.get("image_hero"))
+            self.image_poster = VueURL(kwargs.get("image_poster"))
+            self.cert = self._get_cert_type(kwargs.get("cert_image"))
+            self.cert_description = kwargs.get("cert_desc")
+            self.synopsis_short = kwargs.get("synopsis_short")
+            self.synopsis_full = \
+                self._remove_html(kwargs.get("synopsis_full", ""))
+            self.release_date = kwargs.get("info_release")
+            self.release_date = \
+                datetime.strptime(self.release_date, "%d %b %Y")
+            self.directors: List[str] | None = \
+                self._split_names(kwargs.get("info_director", ""))
+            self.cast: List[str] | None = \
+                self._split_names(kwargs.get("info_cast", ""))
+            self.runtime = kwargs.get("info_runningtime")
+            self.trailers_link = VueURL(kwargs.get("videolink"))
+            self.film_link = VueURL(kwargs.get("filmlink"))
+            self.times_link = VueURL(kwargs.get("timeslink"))
+            self.trailer_link = VueURL(kwargs.get("video"))
+            self.coming_soon: bool = kwargs.get("coming_soon")
+            self.genres = self._split_genres(kwargs.get("genres"))
+            self.showing_type = kwargs.get("showing_type", {}).get("name")
+        else:
+            return get_movie(movie_id)
+
+    @classmethod
+    def from_id(cls, movie_id: int) -> "Movie":
+        """Return a Movie object from a movie id."""
+        return get_movie(movie_id)
 
     def _get_cert_type(self, cert_url) -> BBFC_Certificate:
         rating = cert_url.split("/")[-1][:-4]
@@ -70,13 +88,16 @@ class Movie:
             return None
 
     def __repr__(self) -> str:
+        """Return a string representation of the Movie object."""
         return f"{self.title} ({self.release_date.year})"
 
     def __str__(self) -> str:
+        """Return a string representation of the Movie object."""
         return self.title
 
 
 def get_movies() -> List[Movie]:
+    """Return a list of Movie objects found on the API."""
     url = "https://www.myvue.com/data/films"
     headers = {"x-requested-with": "XMLHttpRequest"}
     response = requests.request("GET", url, headers=headers).json()
@@ -86,3 +107,9 @@ def get_movies() -> List[Movie]:
         movies.append(Movie(**movie))
 
     return movies
+
+
+def get_movie(movie_id: int) -> Movie:
+    """Return a Movie object with the id provided."""
+    movies = get_movies()
+    return [movie for movie in movies if movie.id == movie_id][0]
