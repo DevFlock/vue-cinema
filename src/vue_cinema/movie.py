@@ -1,8 +1,11 @@
-import requests
-from typing import List
-from .shared import VueURL
 from datetime import datetime
 from enum import Enum
+from typing import List
+
+import requests
+
+from .shared import VueURL
+
 
 class BBFC_Certificate(Enum):
     _U = "U",
@@ -38,7 +41,7 @@ class Movie:
 
     def _get_cert_type(self, cert_url) -> BBFC_Certificate:
         rating = cert_url.split("/")[-1][:-4]
-        
+
         match rating.upper():
             case "U": return BBFC_Certificate._U
             case "PG": return BBFC_Certificate._PG

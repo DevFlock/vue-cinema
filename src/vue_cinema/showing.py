@@ -1,5 +1,7 @@
-import requests
 from typing import List
+
+import requests
+
 
 class Showing:
     pass

@@ -1,5 +1,7 @@
-import requests
 from typing import List
+
+import requests
+
 
 class Cinema:
     def __init__(self, **kwargs) -> None:

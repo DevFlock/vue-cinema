@@ -1,5 +1,6 @@
 from urllib import parse
 
+
 class VueURL:
     def __init__(self, url) -> None:
         if url.startswith("/-/"):
