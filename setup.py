@@ -1,11 +1,11 @@
 """Setup for the package."""
-import subprocess
+# import subprocess
 
 import setuptools
 
-vue_package_version = \
-    subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE)\
-    .stdout.decode("utf-8").strip()
+# vue_package_version = \
+#     subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE)\
+#     .stdout.decode("utf-8").strip()
 
 with open('README.md', 'r', encoding='utf-8') as fh:
     long_description = fh.read()
@@ -40,5 +40,5 @@ setuptools.setup(
     install_requires=[
         "requests~=2.28.1"
     ],
-    version=vue_package_version
+    version="0.0.1"
 )
