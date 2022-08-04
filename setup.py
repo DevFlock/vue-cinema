@@ -1,5 +1,12 @@
 """Setup for the package."""
+import subprocess
+
 import setuptools
+
+vue_package_version = \
+    subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE)\
+    .stdout.decode("utf-8").strip()
+assert "." in vue_package_version
 
 with open('README.md', 'r', encoding='utf-8') as fh:
     long_description = fh.read()
@@ -31,10 +38,8 @@ setuptools.setup(
         'Operating System :: OS Independent',
     ],
     python_requires='>=3.10',
-    # install_requires=['Pillow'],
-    extras_require={
-        'dev': ['check-manifest'],
-        # 'test': ['coverage'],
-    },
-    version="0.0.3"
+    install_requires=[
+        "requests~=2.28.1"
+    ],
+    version=vue_package_version
 )
