@@ -34,8 +34,11 @@ class Movie:
         self.synopsis_full = \
             self._remove_html(kwargs.get("synopsis_full", ""))
         self.release_date = kwargs.get("info_release")
-        self.release_date = \
-            datetime.strptime(self.release_date, "%d %b %Y")
+        if self.release_date:
+            self.release_date = \
+                datetime.strptime(self.release_date, "%d %b %Y")
+        else:
+            self.release_date = None
         self.directors: List[str] | None = \
             self._split_names(kwargs.get("info_director", ""))
         self.cast: List[str] | None = \
@@ -52,19 +55,21 @@ class Movie:
     @classmethod
     def from_id(cls, movie_id: int) -> "Movie":
         """Return a Movie object from a movie id."""
-        return get_movie(movie_id)
+        movie = get_movie(movie_id)
+        return movie
 
     def _get_cert_type(self, cert_url) -> BBFC_Certificate:
-        rating = cert_url.split("/")[-1][:-4]
+        if cert_url is not None:
+            rating = cert_url.split("/")[-1][:-4]
 
-        match rating.upper():
-            case "U": return BBFC_Certificate._U
-            case "PG": return BBFC_Certificate._PG
-            case "12": return BBFC_Certificate._12
-            case "12A": return BBFC_Certificate._12A
-            case "15": return BBFC_Certificate._15
-            case "18": return BBFC_Certificate._18
-            case "_": return None
+            match rating.upper():
+                case "U": return BBFC_Certificate._U
+                case "PG": return BBFC_Certificate._PG
+                case "12": return BBFC_Certificate._12
+                case "12A": return BBFC_Certificate._12A
+                case "15": return BBFC_Certificate._15
+                case "18": return BBFC_Certificate._18
+                case "_": return None
 
     def _split_names(self, names: str) -> List[str]:
         if names:
@@ -73,7 +78,10 @@ class Movie:
         return None
 
     def _split_genres(self, genres) -> List[str]:
-        return [genre for genre in genres.get("names")]
+        if genres:
+            return [genre for genre in genres.get("names")]
+        else:
+            return None
 
     def _remove_html(self, text: str) -> str:
         if text:

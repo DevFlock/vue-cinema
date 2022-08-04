@@ -7,14 +7,17 @@ class VueURL:
 
     def __init__(self, url) -> None:
         """Initialize a VueURL object."""
-        if url.startswith("/-/"):
-            self.url = "https://www.myvue.com" + url
-        elif url.startswith("//"):
-            self.url = "https://" + url[2::]
-        elif url.startswith("https://") or url.startswith("http://"):
-            self.url = url
-        elif url.startswith("/film"):
-            self.url = "https://www.myvue.com" + url
+        if url is not None:
+            if url.startswith("/-/"):
+                self.url = "https://www.myvue.com" + url
+            elif url.startswith("//"):
+                self.url = "https://" + url[2::]
+            elif url.startswith("https://") or url.startswith("http://"):
+                self.url = url
+            elif url.startswith("/film"):
+                self.url = "https://www.myvue.com" + url
+            else:
+                self.url = None
         else:
             self.url = None
 

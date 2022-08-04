@@ -33,3 +33,9 @@ def test_cinema_values():
     assert cinema.name == "Manchester Printworks"
     assert cinema.search_term == "Manchester Printworks"
     assert cinema.link_name == "manchester-printworks"
+
+
+def test_incorrect_id():
+    """Test an incorrect id."""
+    cinema = vue_cinema.Cinema().from_id(23458907)
+    assert cinema is None
