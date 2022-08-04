@@ -6,7 +6,6 @@ import setuptools
 vue_package_version = \
     subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE)\
     .stdout.decode("utf-8").strip()
-assert "." in vue_package_version
 
 with open('README.md', 'r', encoding='utf-8') as fh:
     long_description = fh.read()
