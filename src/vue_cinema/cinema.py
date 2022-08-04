@@ -8,23 +8,21 @@ import requests
 class Cinema:
     """Main class for cinemas that includes information about them."""
 
-    def __init__(self, cinema_id: int = None, **kwargs) -> None:
+    def __init__(self, **kwargs) -> None:
         """
         Initialize a Cinema object.
 
         If cinema_id is provided, then the Cinema is found using the API.
         """
-        if cinema_id is None:
-            self.name = kwargs.get("name")
-            self.search_term = kwargs.get("search_term")
-            self.id = int(kwargs.get("id", 0))
-        else:
-            return get_cinema(cinema_id)
+        self.name = kwargs.get("name")
+        self.search_term = kwargs.get("search_term")
+        self.link_name = kwargs.get("link_name")
+        self.id = int(kwargs.get("id", 0))
 
     @classmethod
     def from_id(cls, cinema_id: int) -> "Cinema":
         """Return a Cinema object from a cinema_id."""
-        return cls(cinema_id)
+        return get_cinema(cinema_id)
 
     def __str__(self) -> str:
         """Return a string representation of the Cinema object."""

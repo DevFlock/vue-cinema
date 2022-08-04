@@ -22,35 +22,32 @@ class BBFC_Certificate(Enum):
 class Movie:
     """Main class for movies that includes information about them."""
 
-    def __init__(self, movie_id: int = None, **kwargs) -> None:
+    def __init__(self, **kwargs) -> None:
         """Initialize a Movie object."""
-        if movie_id is None:
-            self.title = kwargs.get("title")
-            self.id = int(kwargs.get("id", 0))
-            self.image_hero = VueURL(kwargs.get("image_hero"))
-            self.image_poster = VueURL(kwargs.get("image_poster"))
-            self.cert = self._get_cert_type(kwargs.get("cert_image"))
-            self.cert_description = kwargs.get("cert_desc")
-            self.synopsis_short = kwargs.get("synopsis_short")
-            self.synopsis_full = \
-                self._remove_html(kwargs.get("synopsis_full", ""))
-            self.release_date = kwargs.get("info_release")
-            self.release_date = \
-                datetime.strptime(self.release_date, "%d %b %Y")
-            self.directors: List[str] | None = \
-                self._split_names(kwargs.get("info_director", ""))
-            self.cast: List[str] | None = \
-                self._split_names(kwargs.get("info_cast", ""))
-            self.runtime = kwargs.get("info_runningtime")
-            self.trailers_link = VueURL(kwargs.get("videolink"))
-            self.film_link = VueURL(kwargs.get("filmlink"))
-            self.times_link = VueURL(kwargs.get("timeslink"))
-            self.trailer_link = VueURL(kwargs.get("video"))
-            self.coming_soon: bool = kwargs.get("coming_soon")
-            self.genres = self._split_genres(kwargs.get("genres"))
-            self.showing_type = kwargs.get("showing_type", {}).get("name")
-        else:
-            return get_movie(movie_id)
+        self.title = kwargs.get("title")
+        self.id = int(kwargs.get("id", 0))
+        self.image_hero = VueURL(kwargs.get("image_hero"))
+        self.image_poster = VueURL(kwargs.get("image_poster"))
+        self.cert = self._get_cert_type(kwargs.get("cert_image"))
+        self.cert_description = kwargs.get("cert_desc")
+        self.synopsis_short = kwargs.get("synopsis_short")
+        self.synopsis_full = \
+            self._remove_html(kwargs.get("synopsis_full", ""))
+        self.release_date = kwargs.get("info_release")
+        self.release_date = \
+            datetime.strptime(self.release_date, "%d %b %Y")
+        self.directors: List[str] | None = \
+            self._split_names(kwargs.get("info_director", ""))
+        self.cast: List[str] | None = \
+            self._split_names(kwargs.get("info_cast", ""))
+        self.runtime = kwargs.get("info_runningtime")
+        self.trailers_link = VueURL(kwargs.get("videolink"))
+        self.film_link = VueURL(kwargs.get("filmlink"))
+        self.times_link = VueURL(kwargs.get("timeslink"))
+        self.trailer_link = VueURL(kwargs.get("video"))
+        self.coming_soon: bool = kwargs.get("coming_soon")
+        self.genres = self._split_genres(kwargs.get("genres"))
+        self.showing_type = kwargs.get("showing_type", {}).get("name")
 
     @classmethod
     def from_id(cls, movie_id: int) -> "Movie":
